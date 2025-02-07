@@ -49,6 +49,9 @@ Defina a data desejada para prever o preço do barril de petróleo. Recomendamos
 
 # Entrada de dias futuros pelo usuário (limite de 7 a 60 dias)
 diaspred = st.slider("Selecione o número de dias futuros:", min_value=7, max_value=60, value=15, step=1)
+estimadores = st.slider("Selecione o numéro de estimadores a serem utilizados (número de testes que o modelo fará para chegar em uma previsão satisfatória)", min_value=100, max_value=1000, value=300, step=50)
+learning = st.slider("Selecione o learning rate do modelo (será a velocidade com a qual o xgboost irá aprender após cada estimador, quanto maior, mais tempo de processamento)", min_value=0.05, max_value=0.5, value=0.1, step=0.01)
+
 
 # Carregar dados
 @st.cache_data
@@ -86,7 +89,7 @@ if st.button("Prever"):
     x_train, y_train = basef[selected_features], basef[TARGET]
 
     # Treinamento do modelo
-    reg = xgb.XGBRegressor(objective="reg:squarederror", n_estimators=300, learning_rate=0.1)
+    reg = xgb.XGBRegressor(objective="reg:squarederror", n_estimators=estimadores, learning_rate=learning)
     reg.fit(x_train, y_train)
 
     # Avaliação usando os últimos "diaspred" conhecidos
